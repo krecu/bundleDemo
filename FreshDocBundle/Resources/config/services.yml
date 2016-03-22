@@ -1,0 +1,31 @@
+parameters:
+    freshdoc.service.class: FreshDocBundle\Services\FreshDocService
+    freshdoc.consumer.class: FreshDocBundle\Consumer\FreshDocConsumer
+    async_freshdoc.consumer.class: FreshDocBundle\Consumer\AsyncFreshDocConsumer
+
+services:
+    freshdoc.guzzle.client:
+        class: %guzzle.client.class%
+        tags:
+            - { name: guzzle.client }
+        arguments:
+            - %freshdoc.api.url%
+
+    freshdoc.service:
+        class: %freshdoc.service.class%
+        arguments:
+            - %freshdoc%
+            - @freshdoc.guzzle.client
+            - @logger
+            - @old_sound_rabbit_mq.storage_api_rpc
+            - @old_sound_rabbit_mq.async_query_producer
+
+    freshdoc.consumer:
+        class: %freshdoc.consumer.class%
+        arguments:
+            - @freshdoc.service
+
+    async_freshdoc.consumer:
+        class: %async_freshdoc.consumer.class%
+        arguments:
+            - @freshdoc.service

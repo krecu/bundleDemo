@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sketchPlan>
+    <SCHEME_VERSION>{{ SCHEME_VERSION }}</SCHEME_VERSION>
+    <commonInfo>
+        <id></id>
+        <externalId>{{ plan.id }}</externalId>
+        <year>{{ plan.year }}</year>
+        <periodYearFrom>{{ plan.year }}</periodYearFrom>
+        <periodYearTo>{{ plan.year + 2 }}</periodYearTo>
+        <name>План закупок на {{ plan.year }} год</name>
+        <owner>
+            <fullName>{{ foiv.fullName }}</fullName>
+        </owner>
+        <createDate>{{ plan.year }}-00-00T00:00:00Z</createDate>
+        <confirmDate>{{ "now"|date("Y-m-d") }}T{{ "now"|date("h:i:s") }}Z</confirmDate>
+    </commonInfo>
+    <customerInfo>
+        <fullName>{{ foiv.fullName }}</fullName>
+        <factAddress>{{ foiv.factAddress }}</factAddress>
+        <INN>{{ foiv.inn }}</INN>
+        <KPP>{{ foiv.kpp }}</KPP>
+    </customerInfo>
+    <attachments>
+        {% if plan.planDocs is not empty %}
+            {% for doc in plan.planDocs %}
+            <attachment>
+                {% if doc.name is not empty %}
+                    <fileName>{{ doc.name }}</fileName>
+                {% endif %}
+                {% if doc.file is not empty %}
+                    <url>{{ doc.file }}</url>
+                {% endif %}
+            </attachment>
+            {% endfor %}
+        {% endif %}
+    </attachments>
+</sketchPlan>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<notificationEF schemeVersion="{{ schemeVersion }}">
+    <id>{{ lot.lotCode }}</id>
+    <externalId>{{ lot.id }}</externalId>
+    {#<purchaseNumber></purchaseNumber> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+    <docPublishDate>{{ "now"|date('c') }}</docPublishDate>
+    <purchaseObjectInfo>{{ lot.title }}</purchaseObjectInfo> {# @TODO: обязательное поле #}
+    <purchaseResponsible>
+        <responsibleOrg>
+            <regNum>01731000037</regNum>
+            <fullName>{{ lot.common.fullName }}</fullName>
+            <postAddress>{{ lot.common.postAddress }}</postAddress>
+            <factAddress>{{ lot.common.factAddress }}</factAddress>
+            <INN>{{ lot.common.inn }}</INN>
+            <KPP>{{ lot.common.kpp }}</KPP>
+        </responsibleOrg>
+        <responsibleRole>CU</responsibleRole>
+        <responsibleInfo>
+            <orgPostAddress>{{ lot.common.postAddress }}</orgPostAddress>
+            <orgFactAddress>{{ lot.common.factAddress }}</orgFactAddress>
+            <contactPerson>
+                <lastName>{{ lot.procResp.lastName }}</lastName>
+                <firstName>{{ lot.procResp.name|split(' ')[0] }}</firstName>
+                <middleName>{{ lot.procResp.name|split(' ')[1] }}</middleName>
+            </contactPerson>
+            <contactEMail>{{ lot.procResp.email }}</contactEMail>
+            <contactPhone>{{ lot.common.phone }}</contactPhone>
+        </responsibleInfo>
+        {#{% if lot.common.type == 'spec' %}#} {# @TODO: нужен текст от аналитиков, будет хардкод #}
+            {#<specializedOrg> #}
+                {#<regNum>{{ lot.common.code_spz }}</regNum>#}
+                {#<fullName>{{ lot.common.fullName }}</fullName>#}
+                {#<postAddress>{{ lot.common.postAddress }}</postAddress>#}
+                {#<factAddress>{{ lot.common.factAddress }}</factAddress>#}
+                {#<INN>{{ lot.common.inn }}</INN>#}
+                {#<KPP>{{ lot.common.kpp }}</KPP>#}
+            {#</specializedOrg>#}
+        {#{% endif %}#}
+        {#<lastSpecializedOrg></lastSpecializedOrg>#} {# @TODO: remove#}
+    </purchaseResponsible>
+    <placingWay>
+        <code>{{ lot.procurementType.code }}</code>
+        <name>{{ lot.procurementType.description }}</name>
+    </placingWay>
+    {#<ETP>#}
+        {#<code>{{ marketplace.title }}</code>#} {# @TODO: Нет лотов с marketplace; marketplace.code #}
+        {#<name></name>#} {# @TODO: marketplace.title #}
+        {#<url></url>#} {# @TODO: marketplace.http #}
+    {#</ETP>#}
+    <procedureInfo>
+        <collecting>
+            <startDate>{{ lot.applicationDateTimeStart }}</startDate>
+            <place>{{ lot.applicationPostAddress }}</place>
+            <order>{{ lot.applicationPostAddress }}</order>
+            <endDate>{{ lot.applicationDateTimeEnd }}</endDate>
+        </collecting>
+        <scoring>
+            <date>{{ lot.applicationRassmotrDateTime }}</date>
+        </scoring>
+        <bidding>
+            <date>{{ lot.auctionDate }}</date>
+        </bidding>
+    </procedureInfo>
+    <lot>
+        <maxPrice>{{ lot.nmckPrice }}</maxPrice>
+        <currency>
+            <code>RUB</code>
+            <name>Российский рубль</name>
+        </currency>
+        <financeSource>средства федерального бюджета</financeSource> {#TODO: hardcode #}
+        <quantityUndefined>true</quantityUndefined> {#TODO: hardcode #}
+        <customerRequirements>
+            {% for stage in lot.stages %}
+                <customerRequirement>
+                    <customer>
+                        <regNum>01731000037</regNum> {#TODO: hardcode #}
+                        <fullName>{{ lot.common.fullName }}</fullName>
+                    </customer>
+                    <maxPrice>{{ lot.nmckPrice }}</maxPrice>
+                    <deliveryPlace></deliveryPlace> {# @TODO: обязательное поле; Место доставки должно быть указано с помощью элемента kladrPlaces. Будем «тянуть» информацию оттуда. Это раздел ниже. На 18 спринт стоит задача по добавлению КЛАДР в модель данныхю #}
+                    <kladrPlaces> {# @TODO: обязательное поле; необходима задача по кладр;  #}
+                        <kladrPlace>
+                            <kladr>
+                                <kladrType></kladrType>
+                                <kladrCode></kladrCode>
+                                <fullName></fullName>
+                            </kladr>
+                            <country>
+                                <countryCode>643</countryCode>
+                                <countryFullName>Российская Федерация</countryFullName>
+                            </country>
+                            <deliveryPlace></deliveryPlace>
+                            <noKladrForRegionSettlement>
+                                <region></region>
+                                <settlement></settlement>
+                            </noKladrForRegionSettlement>
+                        </kladrPlace>
+                    </kladrPlaces>
+                    {% if stage.executionDateTerm == false %}
+                        <deliveryTerm>{{ stage.executionDate }}</deliveryTerm>
+                    {% else %}
+                        <deliveryTerm>{{ stage.executionTerm }}</deliveryTerm>
+                    {% endif %}
+                    {#<applicationGuarantee> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+                        {#<amount>{{ lot.prepaymentBidPercentage }}</amount>#}
+                        {#<procedureInfo>согласно документации об электронном аукционе</procedureInfo>#}
+                        <settlementAccount>40501810600002000079</settlementAccount> {# @TODO: обязательное поле #}
+                        {#&#123;&#35;<personalAccount></personalAccount>&#35;&#125;#}
+                        <bik>044583001</bik> {# @TODO: обязательное поле #}
+                    {#</applicationGuarantee>#}
+                    {#<contractGuarantee> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+                        {#<amount>{{ lot.prepaymentContractPercentage }}</amount>#}
+                        {#&#123;&#35;<part></part>&#35;&#125;#}
+                        {#<procedureInfo></procedureInfo> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                        {#<settlementAccount></settlementAccount> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                        {#&#123;&#35;<personalAccount></personalAccount>&#35;&#125;#}
+                        {#<bik></bik> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                    {#</contractGuarantee>#}
+                    {#<tenderPlanInfo> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+                        {#&#123;&#35; ID какого плана брать? &#35;&#125;#}
+                        {#&#123;&#35;<planNumber>{{ lot.plan.id }}</planNumber>&#35;&#125; &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                        {#<positionNumber></positionNumber> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                    {#</tenderPlanInfo>#}
+                    {#<budgetFinancings>#}
+                        {## foreach#}
+                        {#<budgetFinancing> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                            {#<kbkCode></kbkCode> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                            {#<year></year> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                            {#&#123;&#35;<sum></sum>&#35;&#125;#}
+                        {#</budgetFinancing>#}
+                        {#&#123;&#35;<totalSum></totalSum>&#35;&#125;#}
+                    {#</budgetFinancings>#}
+                    {#<nonbudgetFinancings>#}
+                        {#&#123;&#35; TODO: см в таск&#35;&#125;#}
+                        {#&#123;&#35; foreach&#35;&#125;#}
+                        {#<budgetFinancing>#}
+                            {#<kbkCode></kbkCode> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                            {#<year></year> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                            {#&#123;&#35;<sum></sum>&#35;&#125;#}
+                        {#</budgetFinancing>#}
+                        {#&#123;&#35;<totalSum></totalSum>&#35;&#125;#}
+                    {#</nonbudgetFinancings>#}
+                </customerRequirement>
+            {% endfor %}
+        </customerRequirements>
+        <purchaseObjects> {# @TODO: обязательное поле #}
+            {% for stage in lot.stages %}
+                {% for workType in stage.workTypes %}
+                    <purchaseObject> {# @TODO: foreach по всем этапам и worktype в них #}
+                        <OKPD>
+                            <code>{{ lot.okpd.codeOkpd }}</code>
+                            <name>{{ lot.okpd.description }}</name>
+                        </OKPD>
+                        <name>{{ workType.title }}</name> {# @TODO: worktype.title #}
+                        <OKEI>
+                            <code>{{ lot.okei.code }}</code>
+                            <nationalCode>{{ lot.okei.description }}</nationalCode>
+                        </OKEI>
+                        {#<customerQuantities> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+                            {#&#123;&#35;foreach&#35;&#125;#}
+                            {#<customerQuantity> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                                {#<customer> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                                    {#<regNum></regNum> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+                                    {#<fullName></fullName>#}
+                                {#</customer>#}
+                                {#<quantity>#}
+                                    {#{% if lot.quantity is not null %}#}
+                                        {#<value>{{ lot.quantity }}</value>#}
+                                    {#{% else %}#}
+                                        {#<undefined></undefined>#}
+                                    {#{% endif %}#}
+                                {#</quantity>#}
+                            {#</customerQuantity>#}
+                        {#</customerQuantities>#}
+                        {#<price></price>#}
+                        <quantity></quantity> {# @TODO: обязательное поле #}
+                        {#<sum></sum>#}
+                    </purchaseObject>
+                {% endfor %}
+            {% endfor %}
+            {#<totalSum></totalSum>#}
+        </purchaseObjects>
+        {#<preferenses>#} {# @TODO: необязательное поле #}
+            {## foreach#}
+            {#<preferense>#}
+                {#<code></code>#}
+                {#<name></name>#}
+                {#<prefValue></prefValue>#}
+            {#</preferense>#}
+        {#</preferenses>#}
+        {#<requirements>#} {# @TODO: обязательное поле #}
+            {# foreach #}
+            {#<requirement>#}
+                {#<code></code>#}
+                {#<name></name>#}
+                {#<content></content>#}
+            {#</requirement>#}
+        {#</requirements>#}
+        {% if lot.requirement3044 == true %}
+            <restrictInfo>Участниками закупки могут быть только субъекты малого предпринимательства, социально
+                ориентированные некоммерческие организации
+            </restrictInfo>
+        {% else %}
+            <restrictInfo>Ограничения участия в определении поставщика (подрядчика, исполнителя) отсутствуют
+            </restrictInfo>
+        {% endif %}
+        {#<restrictForeignsInfo></restrictForeignsInfo>#}
+        {#<addInfo></addInfo>#}
+        {#<publicDiscussion>#}
+            {#<number></number>#}
+            {#<href></href>#}
+            {#<place></place>#}
+        {#</publicDiscussion>#}
+        {#<noPublicDiscussion></noPublicDiscussion>#}
+    </lot>
+    {#<attachments> &#123;&#35; @TODO: обязательное поле &#35;&#125; &#123;&#35; @TODO: формировать документы в freshdoc на момент формирования xml &#35;&#125;#}
+        {#<attachment>#}
+            {#<publishedContentId></publishedContentId>#}
+            {#<fileName></fileName> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+            {#&#123;&#35;<fileSize></fileSize>&#35;&#125;#}
+            {#&#123;&#35;<docDescription></docDescription>&#35;&#125;#}
+            {#<url></url> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+            {#<contentId></contentId> &#123;&#35; @TODO: обязательное поле &#35;&#125;#}
+            {#<content></content> &#123;&#35; @TODO: обязательное поле; либо url &#35;&#125;#}
+            {#<cryptoSigns> &#123;&#35; @TODO: необязательное поле &#35;&#125;#}
+                {#&#123;&#35;foreach&#35;&#125;#}
+                {#<signature>#}
+                    {#<type></type>#}
+                {#</signature>#}
+            {#</cryptoSigns>#}
+        {#</attachment>#}
+    {#</attachments>#}
+</notificationEF>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tenderPlan>
+    <SCHEME_VERSION>{{ SCHEME_VERSION }}</SCHEME_VERSION>
+    <commonInfo>
+        <year>{{ plan.year }}</year>
+        <description>{{ plan.comment }}</description>
+        <confirmDate>{{ "now"|date("Y-m-d") }}T{{ "now"|date("h:i:s") }}Z</confirmDate>
+    </commonInfo>
+    <customerInfo>
+        <customer>
+            <regNum></regNum>
+        </customer>
+        <oktmo>
+            <code>{{ foiv.oktmo }}</code>
+        </oktmo>
+    </customerInfo>
+    <responsibleContactInfo>
+        <lastName></lastName>
+        <firstName></firstName>
+        <middleName></middleName>
+    </responsibleContactInfo>
+    <providedPurchases>
+        <positions>
+            {% for lot in lots %}
+                <position>
+                    <commonInfo>
+                        {% if lot.okved is not empty %}
+                            {% for okved in lot.okved %}
+                                <OKVEDs>
+                                    <code>{{ okved.code }}</code>
+                                    <name>{{ okved.title }}</name>
+                                </OKVEDs>
+                            {% endfor %}
+                        {% endif %}
+                        <сontractSubjectName></сontractSubjectName>
+                        <contractMaxPrice></contractMaxPrice>
+                        <contractCurrency>
+                            <code>RUB</code>
+                        </contractCurrency>
+                        <placingWay>
+                            <code></code>
+                        </placingWay>
+                        <noPublicDiscussion></noPublicDiscussion>
+                        <publicDiscussionNum></publicDiscussionNum>
+                    </commonInfo>
+                    <producs>
+                        {% if lot.stages is not empty %}
+                            {% for stage in lot.stages %}
+                                {% if stage.workTypes is not empty %}
+                                    {% for workType in stage.workTypes %}
+                                        <product>
+                                            {% if lot.okpd is not empty %}
+                                                {% for okpd in lot.okpd %}
+                                                    <OKPD>
+                                                        <code>{{ okpd.codeOkpd }}</code>
+                                                        <name>{{ okpd.description }}</name>
+                                                    </OKPD>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <name>{{ workType.title }}</name>
+                                            <minRequirement>{{ lot.minRequirements }}</minRequirement>
+                                            {% if workType.okei is not empty %}
+                                                <OKEI>
+                                                    <code>{{ workType.okei.code }}</code>
+                                                    <name>{{ workType.okei.description }}</name>
+                                                </OKEI>
+                                            {% endif %}
+                                            <sumMax>{{ workType.pricePerUnit }}</sumMax>
+                                            <quantityUndefined></quantityUndefined>
+                                        </product>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </producs>
+                    <purchaseConditions>
+                        <purchaseFinCondition>
+                            <amount>
+                                {% if lot.prepaymentBidPercentage is not empty %}
+                                    {{ lot.prepaymentBidPercentage }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </amount>
+                        </purchaseFinCondition>
+                        <purchaseGraph>
+                            {% if lot.orderPublication is not empty %}
+                            <purchasePlacingTerm>
+                                <month>{{ lot.orderPublication|date('m') }}</month>
+                                <year>{{ lot.orderPublication|date('Y') }}</year>
+                            </purchasePlacingTerm>
+                            {% endif %}
+                            {% if lot.contractExecution is not empty %}
+                            <contractExecutionTerm>
+                                <month>{{ lot.contractExecution|date('m') }}</month>
+                                <year>{{ lot.contractExecution|date('Y') }}</year>
+                            </contractExecutionTerm>
+                            {% endif %}
+                            <contractExecutionStages></contractExecutionStages>
+                            <periodicity></periodicity>
+                        </purchaseGraph>
+                        {#<preferensesRequirement>#}
+                            {#<preferenses>#}
+                                {#<preferense>#}
+                                    {#<code>{{ lot.preferences282944 }}</code>#}
+                                    {#<name></name>#}
+                                    {#<prefValue></prefValue>#}
+                                {#</preferense>#}
+                            {#</preferenses>#}
+                            {#<requirements>#}
+                                {#<requirement>#}
+                                    {#<content>{{ lot.requirements1944 }}</content>#}
+                                {#</requirement>#}
+                            {#</requirements>#}
+                        {#</preferensesRequirement>#}
+                    </purchaseConditions>
+                </position>
+            {% endfor %}
+        </positions>
+    </providedPurchases>
+</tenderPlan>

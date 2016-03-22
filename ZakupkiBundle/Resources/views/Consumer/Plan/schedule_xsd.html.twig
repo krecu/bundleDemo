@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tenderPlan>
+    <SCHEME_VERSION>{{ SCHEME_VERSION }}</SCHEME_VERSION>
+    <commonInfo>
+        <year>{{ plan.year }}</year>
+        <description>{{ plan.comment }}</description>
+        <confirmDate>{{ "now"|date("Y-m-d") }}T{{ "now"|date("h:i:s") }}Z</confirmDate>
+    </commonInfo>
+    <customerInfo>
+        <customer>
+            <regNum></regNum>
+        </customer>
+        <oktmo>
+            <code>{{ foiv.oktmo }}</code>
+        </oktmo>
+    </customerInfo>
+    <responsibleContactInfo>
+        <lastName></lastName>
+        <firstName></firstName>
+        <middleName></middleName>
+    </responsibleContactInfo>
+    <providedPurchases>
+        <positions>
+            {% for lot in lots|keys %}
+                <position>
+                    <commonInfo>
+                        {% if lot.okved is empty %}
+                            <OKVEDs>
+                                <code>{{ lot.okved.code }}</code>
+                                <name>{{ lot.okved.description }}</name>
+                            </OKVEDs>
+                        {% endif %}
+                        <сontractSubjectName></сontractSubjectName>
+                        <contractMaxPrice></contractMaxPrice>
+                        <contractCurrency>
+                            <code>RUB</code>
+                        </contractCurrency>
+                        <placingWay>
+                            <code></code>
+                        </placingWay>
+                        <noPublicDiscussion></noPublicDiscussion>
+                        <publicDiscussionNum></publicDiscussionNum>
+                    </commonInfo>
+                    <producs>
+                        {% for stage in lot.stages %}
+                            {% for workType in stage.workTypes %}
+                                <product>
+                                    <OKPD>
+                                        <code>{{ lot.okpd.codeOkpd }}</code>
+                                        <name>{{ lot.okpd.description }}</name>
+                                    </OKPD>
+                                    <name>{{ workType.title }}</name>
+                                    <minRequirement>{{ lot.minRequirements }}</minRequirement>
+                                    {% if workType.okei is empty %}
+                                        <OKEI>
+                                            <code>{{ workType.okei.code }}</code>
+                                            <name>{{ workType.okei.description }}</name>
+                                        </OKEI>
+                                    {% endif %}
+                                    <sumMax>{{ workType.pricePerUnit }}</sumMax>
+                                    <quantityUndefined></quantityUndefined>
+                                </product>
+                            {% endfor %}
+                        {% endfor %}
+
+                    </producs>
+                    <purchaseConditions>
+                        {#<purchaseFinCondition>
+                            <amount>{{ lot.prepaymentBidPercentage }}</amount>
+                        </purchaseFinCondition>#}
+                        <purchaseGraph>
+                            <purchasePlacingTerm>
+                                <month>{{ lot.orderPublication|date('m') }}</month>
+                                <year>{{ lot.orderPublication|date('Y') }}</year>
+                            </purchasePlacingTerm>
+                            <contractExecutionTerm>
+                                <month>{{ lot.contractExecution|date('m') }}</month>
+                                <year>{{ lot.contractExecution|date('Y') }}</year>
+                            </contractExecutionTerm>
+                            <contractExecutionStages></contractExecutionStages>
+                            <periodicity></periodicity>
+                        </purchaseGraph>
+                        {#<preferensesRequirement>
+                            <preferenses>
+                                <preferense>
+                                    <code>{{ lot.preferences282944 }}</code>
+                                    <name></name>
+                                    <prefValue></prefValue>
+                                </preferense>
+                            </preferenses>
+                            <requirements>
+                                <requirement>
+                                    <content>{{ lot.requirements1944 }}</content>
+                                </requirement>
+                            </requirements>
+                        </preferensesRequirement>#}
+                    </purchaseConditions>
+                </position>
+            {% endfor %}
+        </positions>
+    </providedPurchases>
+</tenderPlan>
